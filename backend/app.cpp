@@ -49,6 +49,9 @@ int main() {
         response += "Served by backend: " + std::string(hostname) + "\n";
         
         send(client_fd, response.c_str(), response.length(), 0);
+        shutdown(client_fd, SHUT_WR); // Tell the client we are done writing
+        char discard[1024];
+        while (read(client_fd, discard, sizeof(discard)) > 0); // Read any remaining data
         close(client_fd);
     }
     
